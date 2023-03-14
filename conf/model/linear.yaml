@@ -1,0 +1,4 @@
+type: linear
+
+alpha: 0.0
+l1_ratio: 0.2
