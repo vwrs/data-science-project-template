@@ -1,5 +1,6 @@
 mlruns/
 outputs/
+multirun/
 data/*
 notebooks/*
 !.gitkeep

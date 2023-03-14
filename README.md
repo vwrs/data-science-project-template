@@ -11,21 +11,34 @@ This project uses:
   - mlflow
 
 ## Usages
-- Docker build
+- Install
+```
+$ poetry install
+```
+
+- Run
+```
+$ docker run --rm -v $PWD:/app data-project poetry run python main.py [model=linear] [model.alpha=1] ...
+```
+
+- Multi-run
+```
+$ poetry run python main.py --multirun model.alpha=0,0.2,0.5,0.7,1 model.l1_ratio=0,0.2,0.5,0.7,1
+```
+
+- mlflow
+```
+$ poetry run mlflow ui
+```
+
+### Run in Docker
+- Build
 ```
 $ docker build -t data-project .
 ```
 
 - Run
 ```
-$ docker run --rm data-project -v $PWD:/app poetry run python main.py [model=linear] [model.alpha=1] ...
-```
-- Multi-run
-```
-$ docker run --rm data-project -v $PWD:/app poetry run python main.py --multirun [model=linear] [model.alpha=1] ...
+$ docker run --rm -v $PWD:/app data-project poetry run <command>
 ```
 
-- mlflow
-```
-$ docker run --rm data-project -v $PWD:/app poetry run mlflow ui
-```

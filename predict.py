@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
+import logging
+from pathlib import Path
 from sklearn.linear_model import ElasticNet
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
-import logging
 from urllib.parse import urlparse
 import mlflow
 from mlflow import log_param, log_metric
@@ -12,7 +13,7 @@ import mlflow.sklearn
 
 
 class Predictor:
-    '''Predict class'''
+    '''Predictor class'''
 
     logging.basicConfig(level=logging.WARN)
     logger = logging.getLogger(__name__)
@@ -49,7 +50,8 @@ class Predictor:
 
         alpha = self.cfg.model.alpha
         l1_ratio = self.cfg.model.l1_ratio
-        with mlflow.start_run():
+        run_id = f"{self.cfg.model.type}-{alpha}-{l1_ratio}"
+        with mlflow.start_run(run_name=run_id):
             lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
             lr.fit(X_train, y_train)
 
