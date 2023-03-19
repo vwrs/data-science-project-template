@@ -1,16 +1,16 @@
-Data Science Project Template
-===
+# Data Science Project Template
 
 This project uses:
-- Docker
-  - [hadolint](https://github.com/hadolint/hadolint)
 - Python (3.10)
   - Poetry
   - Jupyter Lab
   - hydra
   - mlflow
+- Docker
+  - [hadolint](https://github.com/hadolint/hadolint)
 
 ## Usages
+
 - Install
 ```
 $ poetry install
@@ -18,7 +18,7 @@ $ poetry install
 
 - Run
 ```
-$ docker run --rm -v $PWD:/app data-project poetry run python main.py [model=linear] [model.alpha=1] ...
+$ poetry run python main.py [model=linear] [model.alpha=1] ...
 ```
 
 - Multi-run
@@ -26,10 +26,13 @@ $ docker run --rm -v $PWD:/app data-project poetry run python main.py [model=lin
 $ poetry run python main.py --multirun model.alpha=0,0.2,0.5,0.7,1 model.l1_ratio=0,0.2,0.5,0.7,1
 ```
 
-- mlflow
+- MLflow
 ```
 $ poetry run mlflow ui
+Listening at: http://127.0.0.1:5000
 ```
+
+<img width="1156" alt="mlflow-demo" src="https://user-images.githubusercontent.com/12569381/226176330-a0ee5a95-8ba6-4532-8ca2-3b12c7ee9974.png">
 
 ### Run in Docker
 - Build
@@ -41,4 +44,3 @@ $ docker build -t data-project .
 ```
 $ docker run --rm -v $PWD:/app data-project poetry run <command>
 ```
-
