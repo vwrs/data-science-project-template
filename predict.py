@@ -1,43 +1,47 @@
-import pandas as pd
-import numpy as np
 import logging
-from sklearn.linear_model import ElasticNet
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+from pathlib import Path
 from urllib.parse import urlparse
-import mlflow
-from mlflow import log_param, log_metric
-import mlflow.sklearn
 
+import mlflow
+import mlflow.sklearn
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import ElasticNet
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 
 
 class Predictor:
-    '''Predictor class'''
+    """Predictor class"""
 
     logging.basicConfig(level=logging.WARN)
     logger = logging.getLogger(__name__)
 
     def __init__(self, cfg: dict):
-        '''
+        """
         Args:
             cfg (dict): config
-        '''
+        """
         self.cfg = cfg
 
     def load_dataset(self, csv):
         try:
-            data = pd.read_csv(csv, sep=";")
+            return pd.read_csv(csv, sep=";")
         except Exception as e:
             self.logger.exception(
-                "Unable to download training & test CSV, check your internet connection. Error: %s", e
+                "Unable to download training & test CSV, "
+                "check your internet connection. Error: %s",
+                e,
             )
-        return data
+            raise RuntimeError(f"Failed to load dataset from {csv}") from e
 
     def train(self):
-        '''Train a model.'''
-        csv_url = (
-            "https://raw.githubusercontent.com/mlflow/mlflow/master/tests/data/winequality-red.csv"
-        )
+        """Train a model."""
+        mlruns_dir = Path(__file__).resolve().parent / "mlruns"
+        mlflow.set_tracking_uri(mlruns_dir.as_uri())
+        mlflow.set_experiment("wine-quality")
+
+        csv_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
         data = self.load_dataset(csv_url)
         # Split the data into training and test sets. (0.75, 0.25) split.
         X, y = train_test_split(data)
@@ -58,10 +62,12 @@ class Predictor:
 
             (rmse, mae, r2) = self.eval_metrics(y_test, predicted)
 
-            print(f"model {self.cfg.model.type} (alpha={alpha:f}, l1_ratio={l1_ratio:f}):")
-            print("  RMSE: %s" % rmse)
-            print("  MAE: %s" % mae)
-            print("  R2: %s" % r2)
+            print(
+                f"model {self.cfg.model.type} (alpha={alpha:f}, l1_ratio={l1_ratio:f}):"
+            )
+            print(f"  RMSE: {rmse}")
+            print(f"  MAE: {mae}")
+            print(f"  R2: {r2}")
 
             mlflow.log_param("alpha", alpha)
             mlflow.log_param("l1_ratio", l1_ratio)
@@ -74,10 +80,10 @@ class Predictor:
             # Model registry does not work with file store
             if tracking_url_type_store != "file":
                 mlflow.sklearn.log_model(
-                    lr, "model",
-                    registered_model_name="ElasticnetWineModel")
+                    lr, name="model", registered_model_name="ElasticnetWineModel"
+                )
             else:
-                mlflow.sklearn.log_model(lr, "model")
+                mlflow.sklearn.log_model(lr, name="model")
 
     def eval_metrics(self, actual, pred):
         rmse = np.sqrt(mean_squared_error(actual, pred))
