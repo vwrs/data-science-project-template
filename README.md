@@ -13,22 +13,22 @@ This project uses:
 
 - Install
 ```
-$ poetry install
+$ uv sync
 ```
 
 - Run
 ```
-$ poetry run python main.py [model=linear] [model.alpha=1] ...
+$ uv run python main.py [model=linear] [model.alpha=1] ...
 ```
 
 - Multi-run
 ```
-$ poetry run python main.py --multirun model.alpha=0,0.2,0.5,0.7,1 model.l1_ratio=0,0.2,0.5,0.7,1
+$ uv run python main.py --multirun model.alpha=0,0.2,0.5,0.7,1 model.l1_ratio=0,0.2,0.5,0.7,1
 ```
 
 - MLflow
 ```
-$ poetry run mlflow ui
+$ uv run mlflow ui
 Listening at: http://127.0.0.1:5000
 ```
 
@@ -42,5 +42,5 @@ $ docker build -t data-project .
 
 - Run
 ```
-$ docker run --rm -v $PWD:/app data-project poetry run <command>
+$ docker run --rm -v $PWD:/app data-project uv run <command>
 ```
