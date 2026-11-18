@@ -13,7 +13,7 @@ dependencies = [
     "mlflow>=3.11.1",
     "numpy>=2.4.4",
     "pandas>=2.3.3",
-    "scikit-learn>=1.8.0",
+    "scikit-learn>=1.9.1",
     "seaborn>=0.13.2",
     "tqdm>=4.67.3",
 ]
